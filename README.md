@@ -19,7 +19,7 @@ A simple telegram bot propviding help with learning resources for politechnical 
 
 Гиф - демонстрация процесса:
 
-![](pip_install.gif)
+![](UXG0G.gif)
 
 Хорошо, теперь установим саму библиотеку. Для этого нужно просто ввести в терминале следующие команды:
 
