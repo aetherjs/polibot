@@ -20,24 +20,23 @@ item_back_с = types.KeyboardButton('Назад')
 markup_course_choise.add(itema, itemb, itemc, item_back_с)
 
 markup_back = types.ReplyKeyboardMarkup(row_width=1)
-item_back_button = types.KeyboardButton('Обратно к выбору курса')
+item_back_button = types.KeyboardButton('Нажмите сюда, чтобы вернуться обратно к выбору номера курса')
 markup_back.add(item_back_button)
 
 current_year = ''
-current_course = 'Test'
+current_course = ''
 current_level = ''
 
 @bot.message_handler(commands=['help'])
 def send_help_message(message):
-    pass
-
-
+    bot.send_message(message.chat.id, "/start или /chooseyear - для начала работы заново")
+    
 @bot.message_handler(commands=['start', 'chooseyear'])
 @bot.message_handler(func=lambda message: message.text == 'Назад' and current_level == 'Course')
 def send_year_keyboard(message):
     global current_level
     current_level = 'Year'
-    bot.send_message(message.chat.id, "Выберите свой курс", reply_markup=markup_year_choice)
+    bot.send_message(message.chat.id, "Пожалуйста, выберите номер своего курса.", reply_markup=markup_year_choice)
 
 @bot.message_handler(func=lambda message: message.text in config.list_of_years and current_level == 'Year')
 @bot.message_handler(func=lambda message: message.text == 'Назад' and current_level == 'Subject')
@@ -45,9 +44,10 @@ def send_course_keyboard(message):
     if (message.text != 'Назад'):
         global current_year
         current_year = message.text
+    bot.send_message(message.chat.id, 'Вы находитесь в меню [' + current_year + '].')
     global current_level
     current_level = 'Course'
-    bot.send_message(message.chat.id, 'Хорошо, теперь уважите свое направление:', reply_markup=markup_course_choise)
+    bot.send_message(message.chat.id, 'Хорошо, теперь укажите Ваше направление обучения, пожалуйста.', reply_markup=markup_course_choise)
     
 
 @bot.message_handler(func=lambda message: message.text in config.list_of_courses and current_level == 'Course')
@@ -60,6 +60,8 @@ def send_subject_keyboard(message):
     if (message.text != 'Назад'):
         global current_course
         current_course = message.text
+
+    bot.send_message(message.chat.id, 'Вы находитесь в меню [' + current_year + " > " + current_course + '].')
 
     list_of_subjects = []
 
@@ -80,7 +82,7 @@ def send_subject_keyboard(message):
     item_back_t = types.KeyboardButton('Назад')
     temp_markup.add(item_back_t)
 
-    bot.send_message(message.chat.id, 'Выберите интересующий вас курс:', reply_markup=temp_markup)
+    bot.send_message(message.chat.id, 'Пожалуйста, выберите интересующий Вас онлайн-курс.', reply_markup=temp_markup)
 
 @bot.message_handler(func=lambda message: message.text in config.subjects_dict and current_level == 'Subject')
 def send_subject_link(message):
@@ -89,7 +91,7 @@ def send_subject_link(message):
     bot.send_message(message.chat.id, config.subjects_dict[message.text], reply_markup=markup_back)
     
 
-@bot.message_handler(func=lambda message: message.text == 'Обратно к выбору курса')
+@bot.message_handler(func=lambda message: message.text == 'Нажмите сюда, чтобы вернуться обратно к выбору номера курса')
 def back_to_courses(message):
     send_year_keyboard(message)
 
